@@ -33,6 +33,29 @@
 </template>
 
 <script>
+
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "firebase/app";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCOEaSOVSlgL0dVkP-XSOqQSi1OQXqfsAM",
+      authDomain: "test-c4643.firebaseapp.com",
+      projectId: "test-c4643",
+      storageBucket: "test-c4643.appspot.com",
+      messagingSenderId: "321183731663",
+      appId: "1:321183731663:web:fe53c9dee1c404a8bb4cba"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+
+
+
+
     import pkg from '../../package'
 
     export default {
@@ -53,41 +76,69 @@
 
                 this.loading = true
 
+                const auth = getAuth(app);
+
+              try{
+
+                let userCredential = await signInWithEmailAndPassword(auth, this.form.email, this.form.password);
+
+
+                this.loading = false;
+                console.log('login');
+                // Signed in
+                const user = userCredential.user;
+
                 let data = {
-                    data: {
-                        grant_type: "password",
-                        client_id: process.env.PASSPORT_PASSWORD_GRANT_ID,
-                        client_secret: process.env.PASSPORT_PASSWORD_GRANT_SECRET,
-                        scope: "*",
-                        username: this.form.email,
-                        password: this.form.password
-                    }
+                  data: {
+                    grant_type: "password",
+                    client_id: process.env.PASSPORT_PASSWORD_GRANT_ID,
+                    client_secret: process.env.PASSPORT_PASSWORD_GRANT_SECRET,
+                    scope: "*",
+                    username: this.form.email,
+                    password: this.form.password
+                  }
                 };
 
 
                 try {
-                    let login = await this.$auth.loginWith("password_grant", data)
+                  let login = await this.$auth.loginWith("password_grant", data)
 
-                    this.$router.replace("/");
+                  this.$router.replace("/");
 
-                    this.notifySuccess('Listo','Ingreso al sistema.');
+                  this.notifySuccess('Listo','Ingreso al sistema.');
 
-                    this.$store.dispatch('menu/load')
+                  this.$store.dispatch('menu/load')
 
 
                 }catch (e) {
 
-                    console.log(e.response);
+                  console.log(e.response);
 
-                    var error = e.response.data.message;
+                  var error = e.response.data.message;
 
-                    if(typeof error !== 'undefined'){
+                  if(typeof error !== 'undefined'){
 
-                        this.notifyError(error);
-                    }
+                    this.notifyError(error);
+                  }
 
-                    this.loading = false
+                  this.loading = false
                 }
+
+
+              }catch (error){
+
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorCode,errorMessage);
+
+                this.notifyError(errorMessage);
+                this.loading = false;
+
+              }
+
+
+
+
 
 
 

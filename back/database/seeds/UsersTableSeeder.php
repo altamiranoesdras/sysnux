@@ -24,7 +24,14 @@ class UsersTableSeeder extends Seeder
         Storage::makeDirectory('avatars');
 
 
-        factory(User::class,1)->create(['username' => 'admin'])->each(function (User $user){
+        factory(User::class,1)->create(['username' => 'admin','email' => 'admin@admin.com'])->each(function (User $user){
+
+            $user->syncRoles([Role::DEVELOPER,Role::SUPERADMIN,Role::ADMIN]);
+
+            $user->syncPermissions(['permiso directo 1','permiso directo 2']);
+        });
+
+        factory(User::class,1)->create(['username' => 'admin2','email' => 'altamiranoesdras@gmail.com'])->each(function (User $user){
 
             $user->syncRoles([Role::DEVELOPER,Role::SUPERADMIN,Role::ADMIN]);
 

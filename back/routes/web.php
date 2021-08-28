@@ -13,10 +13,10 @@
 
 use App\User;
 
-Route::get('/', function () {
-
-    $user = User::find(1);
-
-//    dd($user->toArray());
-    return view('welcome',compact('user'));
-});
+//Route::get('/', function () {
+//
+//    $user = User::find(1);
+//
+////    dd($user->toArray());
+//    return view('welcome',compact('user'));
+//});
